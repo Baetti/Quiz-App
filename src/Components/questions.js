@@ -42,7 +42,7 @@ export const questions = [
     correctAnswer: "Properties",
   },
   {
-    question: "What is Babel",
+    question: "What is Babel?",
     options: ["Compiler", "Interpreter", "Both A and B", "None of the above"],
     correctAnswer: "Compiler",
   },
