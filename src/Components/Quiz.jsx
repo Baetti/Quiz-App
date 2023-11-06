@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { questions } from "./questions";
 import "./Quiz.css";
+import { useNavigate } from "react-router-dom";
+// import Confetti from "react-confetti";
+import ConfettiAnimation from "react-dom-confetti";
 
 function Quiz() {
   const [activeQuestion, setActiveQuestion] = useState(0);
@@ -12,7 +15,8 @@ function Quiz() {
     wrongAnswers: 0,
   });
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
-
+  const [confettiEffect, setConfettiEffect] = useState(false);
+  const navigate = useNavigate();
   const { question, options, correctAnswer } = questions[activeQuestion];
 
   const onClickNext = () => {
@@ -31,6 +35,8 @@ function Quiz() {
       setSelectedAnswer("");
       setSelectedAnswerIndex(null);
     } else {
+      setConfettiEffect(true); // Hide confetti after a few seconds (adjust the time as needed)
+
       setShowResult(true);
     }
   };
@@ -52,6 +58,8 @@ function Quiz() {
     setShowResult(false);
     setResult({ score: 0, correctAnswers: 0, wrongAnswers: 0 });
     setSelectedAnswerIndex(null);
+    setConfettiEffect(false);
+    navigate("/");
   };
 
   return (
@@ -59,26 +67,32 @@ function Quiz() {
       style={{ height: "75vh" }}
       className="d-flex w-100 p-1 justify-content-center flex-column "
     >
+      <ConfettiAnimation
+        active={confettiEffect}
+        width={window.innerWidth}
+        height={window.innerHeight}
+      />
+
       {!showResult ? (
         <>
           <div>
-            <span className="fs-3 text-warning">
+            <span className="fs-3 text-success">
               {addLeadingZero(activeQuestion + 1)}
             </span>
-            <span className="fs-4 text-primary">
+            <span className="fs-4 text-warning">
               /{addLeadingZero(questions.length)}
             </span>
           </div>
           <div className="px-3 py-1">
             <h1
-              className="text-center text-primary fw-bolder"
+              className="text-center text-primary fw-bolder fs-1"
               style={{ fontFamily: "Caprasimo" }}
             >
               Quiz
             </h1>
             <h2
               style={{ fontFamily: "Bacasime Antique" }}
-              className="fw-bolder text-dark"
+              className="fw-bolder text-light"
             >
               {question}
             </h2>
@@ -103,7 +117,7 @@ function Quiz() {
           <div className="d-flex justify-content-end px-2 mb-2 quiz-container">
             <button
               onClick={onClickNext}
-              className="btn btn-success"
+              className="btn btn-danger"
               disabled={selectedAnswerIndex === null}
             >
               {activeQuestion === questions.length - 1 ? "Finish" : "Next"}
@@ -112,12 +126,31 @@ function Quiz() {
         </>
       ) : (
         <div className="d-flex w-100 p-1 justify-content-center flex-column ">
-          <h2>Total Questions: {questions.length}</h2>
-          <h3>Total Score: {result.score}</h3>
-          <h3>Correct: {result.correctAnswers}</h3>
-          <button onClick={resetQuiz} className="btn btn-primary">
-            New Game
-          </button>
+          <h1 style={{ fontFamily: "Vina Sans" }} className="mt-1 text-center ">
+            RESULT
+          </h1>
+          <div className="d-flex justify-content-center align-items-center mb-4 flex-column">
+            <h2 style={{ fontFamily: "Vina Sans" }}>
+              Total Questions: {questions.length}
+            </h2>
+            <h3 style={{ fontFamily: "Vina Sans" }}>
+              Total Score: {result.score}
+            </h3>
+            <h3 style={{ fontFamily: "Vina Sans" }}>
+              Correct Answers: {result.correctAnswers}
+            </h3>
+            <h4 style={{ fontFamily: "Vina Sans" }}>
+              Wrong Answers: {result.wrongAnswers}
+            </h4>
+          </div>
+          <div className="d-flex justify-content-center w-100 align-items-center">
+            <button
+              onClick={resetQuiz}
+              className="btn btn-primary w-50 text-center"
+            >
+              Play Again
+            </button>
+          </div>
         </div>
       )}
     </div>
